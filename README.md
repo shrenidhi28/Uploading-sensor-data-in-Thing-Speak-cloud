@@ -1,4 +1,7 @@
-# Uploading temperature sensor data in Thing Speak cloud
+##  C.Shrenidhi 
+## 212223040196
+
+#  EXP3: Uploading temperature sensor data in Thing Speak cloud
 
 # AIM:
 To monitor the temperature sensor data in the Thing speak using an ESP32 controller.
@@ -71,10 +74,70 @@ Automatically act on your data and communicate using third-party services like T
 
 
 # PROGRAM:
+#include "ThingSpeak.h" <br>
+#include <WiFi.h> <br>
+
+char ssid[] = "Chase"; //SSID <br>
+char pass[] = "123456789"; // Password <br>
+
+<br> <br>
+const int trigger = 25; <br>
+const int echo = 26; <br>
+long T; <br>
+float distanceCM; <br>
+WiFiClient  client; <br>
+
+unsigned long myChannelField =  2495364; // Channel ID <br>
+const int ChannelField = 1; // Which channel to write data <br>
+const char * myWriteAPIKey = "KTO65NFJC7P0JQ0E"; // Your write API Key <br>
+<br>
+void setup() <br>
+{<br>
+  Serial.begin(115200); <br>
+  pinMode(trigger, OUTPUT); <br>
+  pinMode(echo, INPUT); <br>
+  WiFi.mode(WIFI_STA); <br>
+  ThingSpeak.begin(client); <br>
+} <br>
+void loop() <br>
+{ <br>
+  if (WiFi.status() != WL_CONNECTED) <br>
+  { <br>
+    Serial.print("Attempting to connect to SSID: "); <br>
+    Serial.println(ssid); <br>
+    while (WiFi.status() != WL_CONNECTED) <br>
+    { <br>
+      WiFi.begin(ssid, pass); <br>
+      Serial.print("."); <br>
+      delay(5000); <br>
+    } <br>
+    Serial.println("\nConnected."); <br>
+  } <br>
+  digitalWrite(trigger, LOW); <br>
+  delay(1); <br>
+  digitalWrite(trigger, HIGH); <br>
+  delayMicroseconds(10); <br>
+  digitalWrite(trigger, LOW); <br>
+  T = pulseIn(echo, HIGH); <br>
+  distanceCM = T * 0.034; <br>
+  distanceCM = distanceCM / 2; <br>
+  Serial.print("Distance in cm: "); <br>
+  Serial.println(distanceCM); <br>
+  ThingSpeak.writeField(myChannelField, ChannelField, distanceCM, myWriteAPIKey); <br>
+  delay(1000);<br>
+}<br>
 
 # CIRCUIT DIAGRAM:
+<img src="https://github.com/shrenidhi28/Uploading-sensor-data-in-Thing-Speak-cloud/assets/155261096/474b67f8-7d9b-41a4-8246-96af6dfb2244" width=500 height=500>
 
 # OUTPUT:
+GRAPH: <br> <br>
+<img src="https://github.com/shrenidhi28/Uploading-sensor-data-in-Thing-Speak-cloud/assets/155261096/679ab6ec-aad0-4a8d-919b-87087b376512" width=500 height=500>
+
+SERIAL MONITOR READINGS <br> <br>
+<img src="https://github.com/shrenidhi28/Uploading-sensor-data-in-Thing-Speak-cloud/assets/155261096/60413f0b-3e0f-4fef-909c-017067dc8903" width=500 height=500>
+
+
 
 # RESULT:
 
